@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const satellite = require('satellite.js');
+const sgp4 = require('./sgp4');
 const yargs = require('yargs');
 const { hideBin } = require('yargs/helpers');
 
@@ -61,7 +61,7 @@ function formatDate(date) {
 }
 
 function predictPasses(tle, obs, hours, minEl) {
-  const satrec = satellite.twoline2satrec(tle.tle1, tle.tle2);
+  const satrec = sgp4.twoline2satrec(tle.tle1, tle.tle2);
   const start = new Date();
   const end = new Date(start.getTime() + hours * 3600 * 1000);
   let time = new Date(start);
@@ -74,14 +74,14 @@ function predictPasses(tle, obs, hours, minEl) {
   const passes = [];
 
   while (time <= end) {
-    const eci = satellite.propagate(satrec, time);
+    const eci = sgp4.propagate(satrec, time);
     if (!eci.position) {
       time = new Date(time.getTime() + stepMs);
       continue;
     }
-    const gmst = satellite.gstime(time);
-    const ecf = satellite.eciToEcf(eci.position, gmst);
-    const look = satellite.ecfToLookAngles(obs, ecf);
+    const gmst = sgp4.gstime(sgp4.jday(time.getUTCFullYear(), time.getUTCMonth()+1, time.getUTCDate(), time.getUTCHours(), time.getUTCMinutes(), time.getUTCSeconds()));
+    const ecf = sgp4.eciToEcf(eci.position, gmst);
+    const look = sgp4.ecfToLookAngles(obs, ecf);
     const elev = degrees(look.elevation);
     const az = (degrees(look.azimuth) + 360) % 360;
 
@@ -114,8 +114,8 @@ function predictPasses(tle, obs, hours, minEl) {
 }
 
 const observer = {
-  longitude: satellite.degreesToRadians(lon),
-  latitude: satellite.degreesToRadians(lat),
+  longitude: sgp4.degreesToRadians(lon),
+  latitude: sgp4.degreesToRadians(lat),
   height: alt
 };
 
