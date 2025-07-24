@@ -1,11 +1,12 @@
 # Pass Prediction CLI
 
 This simple command line tool predicts upcoming satellite passes using TLE data.
-It is self contained and independent from the main `gpredict` application.
+It relies on a small JavaScript port of gpredict's SGP4 routines and is
+independent from the main `gpredict` application.
 
 ## Installation
 
-Install dependencies using `npm install` within the `tools` directory.
+Install the lone dependency using `npm install` within the `tools` directory.
 
 ```
 cd tools
