@@ -1,0 +1,8 @@
+{
+  "name": "gpredict-pass-tool",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
+}
